@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Begrepp">
+<title>Begrepp – flashcards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Literata:opsz,wght@7..72,400;7..72,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ECE9F1; --card:#FFFFFF; --ink:#1E1923; --muted:#6B6472; --line:#D6D0DD;
+  --tag:#F3E21B; --tagInk:#2A2600; --plum:#6E2A63; --plumSoft:#E7D9E4;
+  --good:#1E6B47; --again:#A23B2C;
+  --ui:"Bricolage Grotesque", ui-rounded, system-ui, -apple-system, sans-serif;
+  --read:"Literata", Georgia, "Times New Roman", serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#17141B; --card:#241F2A; --ink:#EEE9F2; --muted:#A79FAE; --line:#3A3341;
+    --tag:#E9D816; --tagInk:#211E00; --plum:#D29AC6; --plumSoft:#3B2737;
+    --good:#5CC394; --again:#EB7D6C;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#17141B; --card:#241F2A; --ink:#EEE9F2; --muted:#A79FAE; --line:#3A3341;
+  --tag:#E9D816; --tagInk:#211E00; --plum:#D29AC6; --plumSoft:#3B2737;
+  --good:#5CC394; --again:#EB7D6C;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:17px;line-height:1.4;-webkit-tap-highlight-color:transparent}
+button,textarea,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--plum);outline-offset:2px}
+.wrap{max-width:560px;margin:0 auto;padding:20px 18px 40px}
+.hidden{display:none!important}
+
+/* Home */
+.mast{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:8px 0 22px}
+.mast h1{font-size:2.6rem;line-height:.95;font-weight:800;letter-spacing:-.03em;margin:0}
+.mast h1 .sticker{display:inline-block;background:var(--tag);color:var(--tagInk);padding:.08em .22em .12em;transform:rotate(-2.5deg);box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.iconbtn{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:8px 14px;font-weight:600;font-size:.95rem}
+.decks{display:flex;flex-direction:column;gap:12px}
+.deck{background:var(--card);border-radius:14px;padding:16px 16px 14px;border-left:6px solid var(--plum)}
+.deck h2{font-size:1.15rem;margin:0 0 2px;font-weight:600;line-height:1.25}
+.deck .meta{color:var(--muted);font-size:.9rem}
+.bar{height:6px;background:var(--plumSoft);border-radius:3px;margin:12px 0 12px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--plum);border-radius:3px;transition:width .4s}
+.deck .row{display:flex;gap:8px;flex-wrap:wrap}
+.primary{background:var(--ink);color:var(--bg);border:0;border-radius:10px;padding:11px 18px;font-weight:600}
+.ghost{background:transparent;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font-weight:600}
+.addDeck{width:100%;margin-top:14px;padding:16px;border:2px dashed var(--line);border-radius:14px;background:transparent;font-weight:600;color:var(--muted)}
+.foot{color:var(--muted);font-size:.85rem;margin-top:26px}
+
+/* Study */
+.studyTop{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.studyTop .count{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--muted);font-weight:600}
+.studyTitle{font-weight:600;font-size:.95rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stage{perspective:1400px;touch-action:pan-y}
+.flash{position:relative;height:min(62vh,460px);transform-style:preserve-3d;transition:transform .45s cubic-bezier(.3,.7,.2,1);cursor:pointer}
+.flash.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;background:var(--card);border-radius:18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:26px 22px;display:flex;flex-direction:column;overflow:auto;box-shadow:0 1px 0 var(--line),0 14px 30px -18px rgba(40,20,50,.35)}
+.face.back{transform:rotateY(180deg)}
+.face .kind{align-self:flex-start;background:var(--tag);color:var(--tagInk);font-weight:600;font-size:.85rem;padding:3px 10px;transform:rotate(-2deg)}
+.face.back .kind{background:var(--plumSoft);color:var(--plum)}
+.face .txt{font-family:var(--read);margin:auto 0;font-size:1.45rem;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.face.back .txt{font-size:1.15rem;line-height:1.6}
+.face .hint{color:var(--muted);font-size:.85rem;text-align:center}
+.answerRow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.answerRow button{border:0;border-radius:14px;padding:16px 10px;font-weight:700;font-size:1.05rem}
+.again{background:color-mix(in srgb,var(--again) 16%,var(--card));color:var(--again)}
+.good{background:color-mix(in srgb,var(--good) 16%,var(--card));color:var(--good)}
+.answerRow button:disabled{opacity:.35}
+.swipeHint{text-align:center;color:var(--muted);font-size:.82rem;margin-top:10px}
+.done{background:var(--card);border-radius:18px;padding:28px 22px;text-align:center}
+.done h2{font-size:1.6rem;margin:0 0 6px}
+.done p{color:var(--muted);margin:0 0 18px}
+
+/* Sheets */
+.sheet{position:fixed;inset:0;background:rgba(20,10,25,.45);display:flex;align-items:flex-end;justify-content:center;z-index:10}
+.panel{background:var(--bg);width:100%;max-width:560px;max-height:92%;overflow:auto;border-radius:18px 18px 0 0;padding:18px 18px calc(20px + env(safe-area-inset-bottom,0px))}
+.panel h2{margin:0 0 6px;font-size:1.35rem}
+.panel p{color:var(--muted);margin:0 0 12px;font-size:.92rem}
+.panel input,.panel textarea{width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:10px}
+.panel textarea{min-height:200px;font-family:ui-monospace,Menlo,monospace;font-size:.85rem;line-height:1.45}
+.panel .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.panel pre{background:var(--card);border-radius:10px;padding:10px 12px;font-size:.8rem;overflow-x:auto;margin:0 0 12px}
+.err{color:var(--again);font-size:.9rem;min-height:1.2em;margin-bottom:6px}
+.list{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.list .it{background:var(--card);border-radius:10px;padding:10px 12px}
+.list .q{font-weight:600}
+.list .a{font-family:var(--read);color:var(--muted);font-size:.92rem;margin-top:3px;white-space:pre-wrap}
+.lvl{float:right;font-size:.75rem;color:var(--plum);font-weight:600}
+.danger{color:var(--again)}
+label.toggle{display:flex;align-items:center;gap:10px;font-weight:600;margin:6px 0}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;font-size:.9rem;z-index:20}
+@media (prefers-reduced-motion:reduce){.flash{transition:none}.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section id="home">
+    <div class="mast">
+      <h1>Plugga<br><span class="sticker">begrepp</span></h1>
+      <button class="iconbtn" id="themeBtn" aria-label="Byt tema">◐</button>
+    </div>
+    <noscript><div class="deck"><h2>Korten kan inte visas här</h2><div class="meta">Den här förhandsvisningen kör inte appen. Öppna länken i Safari i stället.</div></div></noscript>
+    <div class="decks" id="decks"></div>
+    <button class="addDeck" id="importBtn">+ Lägg till eller uppdatera kortlek</button>
+    <p class="foot" id="syncNote">Dina framsteg sparas på den här enheten.</p>
+    <button class="ghost" id="backupBtn">Kopiera säkerhetskopia</button>
+  </section>
+
+  <section id="study" class="hidden">
+    <div class="studyTop">
+      <button class="iconbtn" id="backBtn">← Klar</button>
+      <span class="studyTitle" id="studyTitle"></span>
+      <span class="count" id="count"></span>
+    </div>
+    <div id="cardArea">
+      <div class="stage" id="stage">
+        <div class="flash" id="flash" role="button" tabindex="0" aria-label="Vänd kortet">
+          <div class="face front"><span class="kind">Fråga</span><div class="txt" id="qTxt"></div><div class="hint">Tryck för att vända</div></div>
+          <div class="face back"><span class="kind">Svar</span><div class="txt" id="aTxt"></div></div>
+        </div>
+      </div>
+      <div class="answerRow">
+        <button class="again" id="againBtn" disabled>Igen</button>
+        <button class="good" id="goodBtn" disabled>Kunde</button>
+      </div>
+      <div class="swipeHint">Svep vänster för Igen, höger för Kunde</div>
+    </div>
+    <div class="done hidden" id="doneBox">
+      <h2>Klart!</h2>
+      <p id="doneTxt"></p>
+      
