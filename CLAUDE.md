@@ -15,8 +15,9 @@ Initial content: *Kapitel 3 – Kroppen: rörelse, transport och försvar*, pp. 
 - Keep UI strings in Swedish and consistent in tone (informal "du").
 
 ## Architecture (all in `index.html`)
-- `SEED`: array of decks, each `{id, name, src, cards: [[question, answer], ...]}`.
-- `state`: `{updatedAt, decks: [{id, name, src, cards: [{q, a}]}], progress: {"<deckId>::<question>": level}, prefs: {<deckId>: {reverse, all}}}`.
+- `SEED`: array of decks, each `{id, name, group: [string, ...], src, cards: [[question, answer], ...]}`. `group` is a path of labels (e.g. `["Gretas Skol","Biologi","Kapitel 3 – Kroppen"]`) used to nest the deck under collapsible accordions on `#home`, deepest-last.
+- `JP_ITEMS` + `buildJapaneseDecks()`: the ported "Kotoba"/WaniKani Japanese dataset (`Old japanese flashcard app to port to flaca2/`), compacted into `[type, level, characters, meanings, readings]` tuples and chunked into 12 "Nivå X–Y" decks under `["Kotoba – Japanska","WaniKani-ordförråd"]`. Appended once to `state.decks` on first load that lacks a `jp-*` deck id — this is a one-time content migration, not a seed, so it reaches existing users too.
+- `state`: `{updatedAt, decks: [{id, name, group, src, cards: [{q, a}]}], progress: {"<deckId>::<question>": level}, prefs: {<deckId>: {reverse, all}}}`.
 - Persistence: `persist()` -> `saveLocal()` (+ optional Claude-account sync, see below). Theme is stored separately in `localStorage["begrepp.theme"]`.
 - Study logic: `startStudy()` builds a session of up to 20 cards, lowest level first (shuffled within level), unmastered cards only unless `prefs.all`. `answer(good)`: Kunde = level +1 (cap 5); Igen = level 0 and the card is re-inserted up to 3 cards later. `MASTER = 3` counts as "kan".
 - Import: `parseInput()` accepts `question | answer` lines (also tab or `;`), JSON (`{name, cards:[{q,a}]}`, arrays, or `{decks:[...]}`), and a full backup (detected by `decks[0].id` + `progress`). `importDecks()` replaces cards of a deck with the same name (case-insensitive) or adds a new one.
