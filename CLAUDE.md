@@ -12,7 +12,7 @@ Initial content: *Kapitel 3 – Kroppen: rörelse, transport och försvar*, pp. 
 - **No server.** Must work as static hosting. All data lives in the browser (`localStorage`).
 - **iPhone Safari first.** Test at ~390px width. Respect safe-area insets (already set on `:root`). Tap targets >= 44px. Avoid hover-only UI.
 - **Do not break existing user data.** Saved state lives under `localStorage["begrepp.v1"]`. Any change to the state shape needs a migration in `loadLocal()`; never silently discard saved progress.
-- Keep UI strings in Swedish and consistent in tone (informal "du").
+- UI chrome strings (buttons, labels, messages) go through the `DICT`/`t()` i18n layer (Swedish default, English available via the language toggle) — see Architecture below. Keep the Swedish copy's tone informal ("du"). Deck/card *content* (seed cards, imported decks) is never translated — it stays in whatever language it was authored in.
 
 ## Architecture (all in `index.html`)
 - `SEED`: array of decks, each `{id, name, group: [string, ...], src, cards: [[question, answer], ...]}`. `group` is a path of labels (e.g. `["Gretas Skol","Biologi","Kapitel 3 – Kroppen"]`) used to nest the deck under collapsible accordions on `#home`, deepest-last.
@@ -21,7 +21,8 @@ Initial content: *Kapitel 3 – Kroppen: rörelse, transport och försvar*, pp. 
 - Persistence: `persist()` -> `saveLocal()` (+ optional Claude-account sync, see below). Theme is stored separately in `localStorage["begrepp.theme"]`.
 - Study logic: `startStudy(deckId)` studies one deck; `startStudyMulti(deckIds, opts)` blends any number of decks into one shuffled session (used by the "Öva flera kortlekar ihop" sheet). Both funnel through `buildPool()` + `beginSession()`, building a session of up to 20 cards (each tagged with its own `deckId` so progress/`key()` still resolves correctly across decks), lowest level first (shuffled within level), unmastered cards only unless `all`. `answer(good)`: Kunde = level +1 (cap 5); Igen = level 0 and the card is re-inserted up to 3 cards later. `MASTER = 3` counts as "kan".
 - Import: `parseInput()` accepts `question | answer` lines (also tab or `;`), JSON (`{name, cards:[{q,a}]}`, arrays, or `{decks:[...]}`), and a full backup (detected by `decks[0].id` + `progress`). `importDecks()` replaces cards of a deck with the same name (case-insensitive) or adds a new one.
-- Views: `#home`, `#study`, plus bottom sheets `#importSheet` and `#deckSheet`. Card flip is a CSS 3D transform; swipe is a touch handler on `#stage`.
+- Views: `#home`, `#study`, plus bottom sheets `#importSheet`, `#deckSheet`, and `#multiSheet`. Card flip is a CSS 3D transform; swipe is a Pointer Events handler on `#stage` (works for touch, mouse, and pen — not touch-only).
+- i18n: `DICT` maps string keys to `{sv, en}` values (plain strings or `(...)=>string` for ones with dynamic parts); `t(key,...args)` resolves the current `LANG`. Static markup is tagged with `data-i18n`/`data-i18n-html`/`data-i18n-ph`/`data-i18n-aria`; `applyLang()` sweeps those and re-renders the `#syncNote` line, then callers re-run `renderHome()` (or whatever built the dynamic text) since that's also sourced from `t()`. `LANG` persists in `localStorage["begrepp.lang"]`, toggled by `#langBtn`.
 
 ## Known quirks / tech debt
 - Progress is keyed by **question text**. Editing a question resets its progress.

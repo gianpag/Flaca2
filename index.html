@@ -72,7 +72,8 @@ button{cursor:pointer}
 .studyTop{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .studyTop .count{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--muted);font-weight:600}
 .studyTitle{font-weight:600;font-size:.95rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stage{perspective:1400px;touch-action:pan-y}
+.stage{perspective:1400px;touch-action:pan-y;cursor:grab;user-select:none}
+.stage:active{cursor:grabbing}
 .flash{position:relative;height:min(62vh,460px);transform-style:preserve-3d;transition:transform .45s cubic-bezier(.3,.7,.2,1);cursor:pointer}
 .flash.flipped{transform:rotateY(180deg)}
 .face{position:absolute;inset:0;background:var(--card);border-radius:18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:26px 22px;display:flex;flex-direction:column;overflow:auto;box-shadow:0 1px 0 var(--line),0 14px 30px -18px rgba(40,20,50,.35)}
@@ -83,7 +84,8 @@ button{cursor:pointer}
 .face.back .txt{font-size:1.15rem;line-height:1.6}
 .face .hint{color:var(--muted);font-size:.85rem;text-align:center}
 .answerRow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
-.answerRow button{border:0;border-radius:14px;padding:16px 10px;font-weight:700;font-size:1.05rem}
+.answerRow button{border:0;border-radius:14px;padding:14px 10px;font-weight:700;font-size:1.05rem;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.2}
+.answerRow button .sub{font-weight:600;font-size:.78rem;opacity:.75}
 .again{background:color-mix(in srgb,var(--again) 16%,var(--card));color:var(--again)}
 .good{background:color-mix(in srgb,var(--good) 16%,var(--card));color:var(--good)}
 .answerRow button:disabled{opacity:.35}
@@ -122,42 +124,45 @@ label.toggle{display:flex;align-items:center;gap:10px;font-weight:600;margin:6px
 
   <section id="home">
     <div class="mast">
-      <h1>Plugga<br><span class="sticker">begrepp</span></h1>
-      <button class="iconbtn" id="themeBtn" aria-label="Byt tema">◐</button>
+      <h1 id="mastTitle" data-i18n-html="mastTitle"></h1>
+      <div class="row" style="gap:8px">
+        <button class="iconbtn" id="langBtn" data-i18n-aria="langBtnAria">SV</button>
+        <button class="iconbtn" id="themeBtn" data-i18n-aria="themeBtnAria">◐</button>
+      </div>
     </div>
-    <noscript><div class="deck"><h2>Korten kan inte visas här</h2><div class="meta">Den här förhandsvisningen kör inte appen. Öppna länken i Safari i stället.</div></div></noscript>
+    <noscript><div class="deck"><h2 data-i18n="noscriptTitle"></h2><div class="meta" data-i18n="noscriptBody"></div></div></noscript>
     <div class="decks" id="decks"></div>
-    <button class="ghost" id="multiBtn" style="width:100%;margin-top:14px">Öva flera kortlekar ihop</button>
-    <button class="addDeck" id="importBtn">+ Lägg till eller uppdatera kortlek</button>
-    <p class="foot" id="syncNote">Dina framsteg sparas på den här enheten.</p>
-    <button class="ghost" id="backupBtn">Kopiera säkerhetskopia</button>
+    <button class="ghost" id="multiBtn" style="width:100%;margin-top:14px" data-i18n="multiBtn"></button>
+    <button class="addDeck" id="importBtn" data-i18n="importBtn"></button>
+    <p class="foot" id="syncNote" data-i18n="syncNoteLocal"></p>
+    <button class="ghost" id="backupBtn" data-i18n="backupBtn"></button>
   </section>
 
   <section id="study" class="hidden">
     <div class="studyTop">
-      <button class="iconbtn" id="backBtn">← Klar</button>
+      <button class="iconbtn" id="backBtn" data-i18n="backBtn"></button>
       <span class="studyTitle" id="studyTitle"></span>
       <span class="count" id="count"></span>
     </div>
     <div id="cardArea">
       <div class="stage" id="stage">
-        <div class="flash" id="flash" role="button" tabindex="0" aria-label="Vänd kortet">
-          <div class="face front"><span class="kind">Fråga</span><div class="txt" id="qTxt"></div><div class="hint">Tryck för att vända</div></div>
-          <div class="face back"><span class="kind">Svar</span><div class="txt" id="aTxt"></div></div>
+        <div class="flash" id="flash" role="button" tabindex="0" data-i18n-aria="flashAria">
+          <div class="face front"><span class="kind" data-i18n="kindQ"></span><div class="txt" id="qTxt"></div><div class="hint" data-i18n="flipHint"></div></div>
+          <div class="face back"><span class="kind" data-i18n="kindA"></span><div class="txt" id="aTxt"></div></div>
         </div>
       </div>
       <div class="answerRow">
-        <button class="again" id="againBtn" disabled>Igen</button>
-        <button class="good" id="goodBtn" disabled>Kunde</button>
+        <button class="again" id="againBtn" disabled><span class="lbl" data-i18n="againLbl"></span><span class="sub" data-i18n="againSub"></span></button>
+        <button class="good" id="goodBtn" disabled><span class="lbl" data-i18n="goodLbl"></span><span class="sub" data-i18n="goodSub"></span></button>
       </div>
-      <div class="swipeHint">Svep vänster för Igen, höger för Kunde</div>
+      <div class="swipeHint" data-i18n="swipeHint"></div>
     </div>
     <div class="done hidden" id="doneBox">
-      <h2>Klart!</h2>
+      <h2 data-i18n="doneTitle"></h2>
       <p id="doneTxt"></p>
       <div class="row" style="justify-content:center;display:flex;gap:8px">
-        <button class="primary" id="againRound">Kör en runda till</button>
-        <button class="ghost" id="doneHome">Till listan</button>
+        <button class="primary" id="againRound" data-i18n="againRound"></button>
+        <button class="ghost" id="doneHome" data-i18n="doneHome"></button>
       </div>
     </div>
   </section>
@@ -166,19 +171,18 @@ label.toggle{display:flex;align-items:center;gap:10px;font-weight:600;margin:6px
 <!-- Import sheet -->
 <div class="sheet hidden" id="importSheet">
   <div class="panel">
-    <h2>Lägg till kortlek</h2>
-    <p>Klistra in kort, en per rad: <b>fråga | svar</b>. Du kan också använda tab eller semikolon, eller JSON. Har kortleken samma namn som en befintlig ersätts korten, men framstegen för oförändrade frågor behålls.</p>
-    <input id="impName" placeholder="Namn på kortleken, t.ex. Kap 4 – Kemi">
-    <input id="impSubject" placeholder="Gruppering, t.ex. Gretas Skol > Biologi > Kapitel 4 – Kemi">
-    <textarea id="impText" placeholder="Vad är en atom? | Den minsta byggstenen i ett grundämne.
-Vad är en molekyl? | Två eller fler atomer som sitter ihop."></textarea>
+    <h2 data-i18n="impTitle"></h2>
+    <p data-i18n-html="impIntro"></p>
+    <input id="impName" data-i18n-ph="impNamePh">
+    <input id="impSubject" data-i18n-ph="impSubjectPh">
+    <textarea id="impText" data-i18n-ph="impTextPh"></textarea>
     <div class="err" id="impErr"></div>
     <div class="row">
-      <button class="primary" id="impSave">Spara kortlek</button>
-      <label class="ghost" style="display:inline-block">Välj fil…<input type="file" id="impFile" accept=".json,.txt,.csv,.tsv,text/*" class="hidden"></label>
-      <button class="ghost" id="impCancel">Avbryt</button>
+      <button class="primary" id="impSave" data-i18n="impSave"></button>
+      <label class="ghost" style="display:inline-block"><span data-i18n="impChooseFile"></span><input type="file" id="impFile" accept=".json,.txt,.csv,.tsv,text/*" class="hidden"></label>
+      <button class="ghost" id="impCancel" data-i18n="cancel"></button>
     </div>
-    <p style="margin-top:16px">Tips: fotografera nya sidor i boken och be Claude göra om dem till rader i formatet ovan. JSON-format:</p>
+    <p style="margin-top:16px" data-i18n="impTip"></p>
     <pre>{"name":"Kap 4","cards":[{"q":"Fråga","a":"Svar"}]}</pre>
   </div>
 </div>
@@ -188,28 +192,28 @@ Vad är en molekyl? | Två eller fler atomer som sitter ihop."></textarea>
   <div class="panel">
     <h2 id="dsName"></h2>
     <p id="dsMeta"></p>
-    <label class="toggle"><input type="checkbox" id="dsReverse"> Visa svaret först (omvänt)</label>
-    <label class="toggle"><input type="checkbox" id="dsAll"> Öva alla kort, även de jag kan</label>
+    <label class="toggle"><input type="checkbox" id="dsReverse"> <span data-i18n="dsReverse"></span></label>
+    <label class="toggle"><input type="checkbox" id="dsAll"> <span data-i18n="studyAll"></span></label>
     <div class="row" style="margin-top:8px">
-      <button class="ghost" id="dsCopy">Kopiera som text</button>
-      <button class="ghost" id="dsReset">Nollställ framsteg</button>
-      <button class="ghost danger" id="dsDelete">Ta bort</button>
+      <button class="ghost" id="dsCopy" data-i18n="dsCopy"></button>
+      <button class="ghost" id="dsReset" data-i18n="dsReset"></button>
+      <button class="ghost danger" id="dsDelete" data-i18n="dsDelete"></button>
     </div>
     <div class="list" id="dsList"></div>
-    <button class="primary" id="dsClose" style="width:100%">Stäng</button>
+    <button class="primary" id="dsClose" style="width:100%" data-i18n="close"></button>
   </div>
 </div>
 
 <!-- Multi-deck sheet -->
 <div class="sheet hidden" id="multiSheet">
   <div class="panel">
-    <h2>Öva flera kortlekar ihop</h2>
-    <p>Välj de kortlekar du vill blanda i en gemensam övningsrunda.</p>
+    <h2 data-i18n="multiTitle"></h2>
+    <p data-i18n="multiIntro"></p>
     <div class="list" id="multiList"></div>
-    <label class="toggle"><input type="checkbox" id="multiAll"> Öva alla kort, även de jag kan</label>
+    <label class="toggle"><input type="checkbox" id="multiAll"> <span data-i18n="studyAll"></span></label>
     <div class="row" style="margin-top:8px">
-      <button class="primary" id="multiStart">Starta övning</button>
-      <button class="ghost" id="multiCancel">Avbryt</button>
+      <button class="primary" id="multiStart" data-i18n="multiStart"></button>
+      <button class="ghost" id="multiCancel" data-i18n="cancel"></button>
     </div>
   </div>
 </div>
@@ -220,6 +224,96 @@ Vad är en molekyl? | Två eller fler atomer som sitter ihop."></textarea>
 (function(){
 "use strict";
 const $=id=>document.getElementById(id);
+
+/* ---------- i18n ---------- */
+const DICT={
+  mastTitle:{sv:'Plugga<br><span class="sticker">begrepp</span>',en:'Study<br><span class="sticker">flashcards</span>'},
+  themeBtnAria:{sv:"Byt tema",en:"Toggle theme"},
+  langBtnAria:{sv:"Byt språk",en:"Change language"},
+  noscriptTitle:{sv:"Korten kan inte visas här",en:"Cards can't be shown here"},
+  noscriptBody:{sv:"Den här förhandsvisningen kör inte appen. Öppna länken i Safari i stället.",en:"This preview doesn't run the app. Open the link in Safari instead."},
+  multiBtn:{sv:"Öva flera kortlekar ihop",en:"Study several decks together"},
+  importBtn:{sv:"+ Lägg till eller uppdatera kortlek",en:"+ Add or update a deck"},
+  syncNoteLocal:{sv:"Dina framsteg sparas på den här enheten.",en:"Your progress is saved on this device."},
+  syncNoteSynced:{sv:"Dina kortlekar och framsteg sparas i ditt konto, så de finns kvar på alla dina enheter.",en:"Your decks and progress are saved to your account, so they follow you across devices."},
+  backupBtn:{sv:"Kopiera säkerhetskopia",en:"Copy backup"},
+  backBtn:{sv:"← Klar",en:"← Done"},
+  flashAria:{sv:"Vänd kortet",en:"Flip the card"},
+  kindQ:{sv:"Fråga",en:"Question"},
+  kindA:{sv:"Svar",en:"Answer"},
+  flipHint:{sv:"Tryck för att vända",en:"Tap to flip"},
+  againLbl:{sv:"↺ Igen",en:"↺ Again"},
+  againSub:{sv:"Öva mer på det här",en:"Practice this more"},
+  goodLbl:{sv:"✓ Kunde",en:"✓ Knew it"},
+  goodSub:{sv:"Jag kunde svaret",en:"I knew the answer"},
+  swipeHint:{sv:"Dra kortet åt vänster för Igen, åt höger för Kunde",en:"Drag the card left for Again, right for Knew it"},
+  doneTitle:{sv:"Klart!",en:"Done!"},
+  againRound:{sv:"Kör en runda till",en:"Run another round"},
+  doneHome:{sv:"Till listan",en:"Back to list"},
+  impTitle:{sv:"Lägg till kortlek",en:"Add a deck"},
+  impIntro:{sv:"Klistra in kort, en per rad: <b>fråga | svar</b>. Du kan också använda tab eller semikolon, eller JSON. Har kortleken samma namn som en befintlig ersätts korten, men framstegen för oförändrade frågor behålls.",
+    en:"Paste cards, one per line: <b>question | answer</b>. You can also use tab or semicolon, or JSON. If the deck has the same name as an existing one, its cards are replaced, but progress on unchanged questions is kept."},
+  impNamePh:{sv:"Namn på kortleken, t.ex. Kap 4 – Kemi",en:"Deck name, e.g. Chapter 4 – Chemistry"},
+  impSubjectPh:{sv:"Gruppering, t.ex. Gretas Skol > Biologi > Kapitel 4 – Kemi",en:"Grouping, e.g. Greta's School > Biology > Chapter 4 – Chemistry"},
+  impTextPh:{sv:"Vad är en atom? | Den minsta byggstenen i ett grundämne.\nVad är en molekyl? | Två eller fler atomer som sitter ihop.",
+    en:"What is an atom? | The smallest building block of an element.\nWhat is a molecule? | Two or more atoms stuck together."},
+  impSave:{sv:"Spara kortlek",en:"Save deck"},
+  impChooseFile:{sv:"Välj fil…",en:"Choose file…"},
+  cancel:{sv:"Avbryt",en:"Cancel"},
+  impTip:{sv:"Tips: fotografera nya sidor i boken och be Claude göra om dem till rader i formatet ovan. JSON-format:",en:"Tip: photograph new pages from the book and ask Claude to turn them into lines in the format above. JSON format:"},
+  dsReverse:{sv:"Visa svaret först (omvänt)",en:"Show the answer first (reversed)"},
+  studyAll:{sv:"Öva alla kort, även de jag kan",en:"Study all cards, even ones I already know"},
+  dsCopy:{sv:"Kopiera som text",en:"Copy as text"},
+  dsReset:{sv:"Nollställ framsteg",en:"Reset progress"},
+  dsDelete:{sv:"Ta bort",en:"Delete"},
+  close:{sv:"Stäng",en:"Close"},
+  multiTitle:{sv:"Öva flera kortlekar ihop",en:"Study several decks together"},
+  multiIntro:{sv:"Välj de kortlekar du vill blanda i en gemensam övningsrunda.",en:"Pick the decks you want to blend into one shared study round."},
+  multiStart:{sv:"Starta övning",en:"Start studying"},
+  multiSelectAtLeastOne:{sv:"Välj minst en kortlek",en:"Select at least one deck"},
+  homeEmpty:{sv:"Inga kortlekar än. Lägg till en nedan.",en:"No decks yet. Add one below."},
+  deckCountCards:{sv:(n)=>`${n} kort`,en:(n)=>`${n} card${n===1?"":"s"}`},
+  deckKnownCount:{sv:(n)=>`${n} kan du`,en:(n)=>`${n} known`},
+  subMeta:{sv:(decks,known,total)=>`${decks} kortlek${decks===1?"":"ar"} · ${known}/${total} kan du`,en:(decks,known,total)=>`${decks} deck${decks===1?"":"s"} · ${known}/${total} known`},
+  studyBtn:{sv:"Öva",en:"Study"},
+  openBtn:{sv:"Visa kort & inställningar",en:"View cards & settings"},
+  dsMeta:{sv:(group,n,known)=>`${group} · ${n} kort · ${known} kan du`,en:(group,n,known)=>`${group} · ${n} cards · ${known} known`},
+  lvlKnown:{sv:"Kan",en:"Known"},
+  lvlN:{sv:(n)=>`Nivå ${n}`,en:(n)=>`Level ${n}`},
+  lvlNew:{sv:"Ny",en:"New"},
+  confirmResetProgress:{sv:(name)=>`Nollställa framstegen för ${name}?`,en:(name)=>`Reset progress for ${name}?`},
+  toastProgressReset:{sv:"Framstegen nollställda",en:"Progress reset"},
+  confirmDeleteDeck:{sv:(name)=>`Ta bort ${name}?`,en:(name)=>`Delete ${name}?`},
+  toastDeckDeleted:{sv:"Kortleken borttagen",en:"Deck deleted"},
+  toastCopied:{sv:"Kopierat",en:"Copied"},
+  multiRowMeta:{sv:(group,n)=>`${group} · ${n} kort`,en:(group,n)=>`${group} · ${n} cards`},
+  errPasteCard:{sv:"Klistra in minst ett kort.",en:"Paste in at least one card."},
+  errJson:{sv:"JSON-texten går inte att läsa. Kontrollera kommatecken och citattecken.",en:"Couldn't read the JSON. Check commas and quotation marks."},
+  confirmRestoreBackup:{sv:"Återställa hela säkerhetskopian? Nuvarande kortlekar och framsteg ersätts.",en:"Restore the whole backup? Current decks and progress will be replaced."},
+  errCancelled:{sv:"Avbrutet.",en:"Cancelled."},
+  errRestored:{sv:"Återställt!",en:"Restored!"},
+  errNoCards:{sv:"Hittade inga kort. Varje rad behöver ett | mellan fråga och svar.",en:"No cards found. Each line needs a | between question and answer."},
+  errDeckName:{sv:"Ge kortleken ett namn.",en:"Give the deck a name."},
+  errDeckNoCards:{sv:(name)=>`Kortleken "${name}" har inga kort.`,en:(name)=>`The deck "${name}" has no cards.`},
+  skippedLines:{sv:(nums)=>` (hoppade över rad ${nums})`,en:(nums)=>` (skipped line ${nums})`},
+  deckUpdated:{sv:"Kortleken uppdaterad",en:"Deck updated"},
+  deckSaved:{sv:"Kortleken sparad",en:"Deck saved"},
+  backupCopied:{sv:"Säkerhetskopia kopierad. Klistra in den under Lägg till kortlek för att återställa.",en:"Backup copied. Paste it under Add deck to restore it."},
+  doneTxt:{sv:(first,total,known,allTotal)=>`Du kunde ${first} av ${total} direkt. Totalt kan du nu ${known} av ${allTotal} kort.`,
+    en:(first,total,known,allTotal)=>`You knew ${first} of ${total} right away. In total you now know ${known} of ${allTotal} cards.`},
+  cardsLeft:{sv:(n)=>`${n} kvar`,en:(n)=>`${n} left`},
+};
+let LANG="sv";
+function t(key,...args){const e=DICT[key];if(!e)return key;const v=e[LANG];return typeof v==="function"?v(...args):v}
+function applyLang(){
+  document.querySelectorAll("[data-i18n]").forEach(el=>el.textContent=t(el.dataset.i18n));
+  document.querySelectorAll("[data-i18n-html]").forEach(el=>el.innerHTML=t(el.dataset.i18nHtml));
+  document.querySelectorAll("[data-i18n-ph]").forEach(el=>el.placeholder=t(el.dataset.i18nPh));
+  document.querySelectorAll("[data-i18n-aria]").forEach(el=>el.setAttribute("aria-label",t(el.dataset.i18nAria)));
+  $("langBtn").textContent=LANG.toUpperCase();
+  document.documentElement.lang=LANG;
+  $("syncNote").textContent=synced?t("syncNoteSynced"):t("syncNoteLocal");
+}
 
 /* ---------- Seed decks (Kapitel 3, s. 186–193) ---------- */
 const SEED=[
@@ -363,6 +457,7 @@ function persist(){
   saveLocal();
   if(dbRef){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{dbRef.set({json:JSON.stringify(state),updatedAt:state.updatedAt}).catch(()=>{})},800)}
 }
+let synced=false;
 (async function connect(){
   try{
     if(!window.claude||!window.claude.use)return;
@@ -377,7 +472,8 @@ function persist(){
     }
     dbRef=ref;
     if(!snap.exists||(JSON.parse(snap.data().json||"{}").updatedAt||0)<state.updatedAt){await ref.set({json:JSON.stringify(state),updatedAt:state.updatedAt})}
-    $("syncNote").textContent="Dina kortlekar och framsteg sparas i ditt konto, så de finns kvar på alla dina enheter.";
+    synced=true;
+    $("syncNote").textContent=t("syncNoteSynced");
   }catch(e){}
 })();
 
@@ -411,9 +507,9 @@ function renderDeckCard(d,container){
   const known=d.cards.filter(c=>lvl(d.id,c.q)>=MASTER).length;
   const pct=d.cards.length?Math.round(100*known/d.cards.length):0;
   const el=document.createElement("div");el.className="deck";
-  el.innerHTML=`<h2>${esc(d.name)}</h2><div class="meta">${d.cards.length} kort${d.src?" · "+esc(d.src):""} · ${known} kan du</div>
-    <div class="bar" aria-label="${pct}% klart"><i style="width:${pct}%"></i></div>
-    <div class="row"><button class="primary" data-a="study">Öva</button><button class="ghost" data-a="open">Visa kort & inställningar</button></div>`;
+  el.innerHTML=`<h2>${esc(d.name)}</h2><div class="meta">${t("deckCountCards",d.cards.length)}${d.src?" · "+esc(d.src):""} · ${t("deckKnownCount",known)}</div>
+    <div class="bar" aria-label="${pct}%"><i style="width:${pct}%"></i></div>
+    <div class="row"><button class="primary" data-a="study">${t("studyBtn")}</button><button class="ghost" data-a="open">${t("openBtn")}</button></div>`;
   el.querySelector('[data-a=study]').onclick=()=>startStudy(d.id);
   el.querySelector('[data-a=open]').onclick=()=>openDeck(d.id);
   container.appendChild(el);
@@ -427,7 +523,7 @@ function renderNode(node,path,container,openMap){
     const det=document.createElement("details");det.className="subject";
     const defaultOpen=path.length>0||node.children.size<=1;
     det.open=openMap[pathKey]!==undefined?openMap[pathKey]:defaultOpen;
-    det.innerHTML=`<summary><span class="chev">▸</span><span>${esc(seg)}</span><span class="subMeta">${deckCount} kortlek${deckCount===1?"":"ar"} · ${known}/${total} kan du</span></summary><div class="deckList"></div>`;
+    det.innerHTML=`<summary><span class="chev">▸</span><span>${esc(seg)}</span><span class="subMeta">${t("subMeta",deckCount,known,total)}</span></summary><div class="deckList"></div>`;
     det.addEventListener("toggle",()=>{const o=loadOpenSubjects();o[pathKey]=det.open;saveOpenSubjects(o)});
     renderNode(child,newPath,det.querySelector(".deckList"),openMap);
     container.appendChild(det);
@@ -435,7 +531,7 @@ function renderNode(node,path,container,openMap){
 }
 function renderHome(){
   const box=$("decks");box.innerHTML="";
-  if(!state.decks.length){box.innerHTML='<p style="color:var(--muted)">Inga kortlekar än. Lägg till en nedan.</p>';return}
+  if(!state.decks.length){box.innerHTML=`<p style="color:var(--muted)">${t("homeEmpty")}</p>`;return}
   renderNode(buildTree(state.decks),[],box,loadOpenSubjects());
 }
 
@@ -480,7 +576,7 @@ function showCard(){
   // wait for flip-back before swapping text so the answer never flashes
   setTimeout(()=>{$("qTxt").textContent=front;$("aTxt").textContent=back},f.dataset.wasFlipped?220:0);
   f.dataset.wasFlipped="";
-  $("count").textContent=`${sess.queue.length} kvar`;
+  $("count").textContent=t("cardsLeft",sess.queue.length);
 }
 function flip(){
   const f=$("flash");f.classList.toggle("flipped");
@@ -501,7 +597,7 @@ function finish(){
   $("cardArea").classList.add("hidden");$("doneBox").classList.remove("hidden");
   const totalCards=sess.decks.reduce((n,d)=>n+d.cards.length,0);
   const known=sess.decks.reduce((n,d)=>n+d.cards.filter(c=>lvl(d.id,c.q)>=MASTER).length,0);
-  $("doneTxt").textContent=`Du kunde ${sess.correctFirst} av ${sess.total} direkt. Totalt kan du nu ${known} av ${totalCards} kort.`;
+  $("doneTxt").textContent=t("doneTxt",sess.correctFirst,sess.total,known,totalCards);
   $("count").textContent="";
 }
 function goHome(){$("study").classList.add("hidden");$("home").classList.remove("hidden");renderHome();sess=null}
@@ -514,16 +610,32 @@ $("backBtn").onclick=goHome;$("doneHome").onclick=goHome;
 $("againRound").onclick=()=>sess.restart();
 document.addEventListener("keydown",e=>{if(!sess||$("study").classList.contains("hidden"))return;if(e.key==="ArrowLeft")answer(false);if(e.key==="ArrowRight")answer(true)});
 
-// swipe
+// swipe (pointer events: works for touch, mouse and pen alike)
 (function(){
-  const st=$("stage"),f=$("flash");let x0=null,y0=null,dx=0,moved=false;
-  st.addEventListener("touchstart",e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY;dx=0;moved=false},{passive:true});
-  st.addEventListener("touchmove",e=>{if(x0===null)return;dx=e.touches[0].clientX-x0;const dy=e.touches[0].clientY-y0;
-    if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)&&f.classList.contains("flipped")){moved=true;st.style.transform=`translateX(${dx}px) rotate(${dx/30}deg)`;st.style.opacity=String(1-Math.min(.5,Math.abs(dx)/500))}},{passive:true});
-  st.addEventListener("touchend",()=>{st.style.transform="";st.style.opacity="";
-    if(moved&&Math.abs(dx)>90){answer(dx>0)}
-    if(moved){const block=e=>{e.stopPropagation();e.preventDefault()};f.addEventListener("click",block,{capture:true,once:true});setTimeout(()=>f.removeEventListener("click",block,{capture:true}),350)}
-    x0=null},{passive:true});
+  const st=$("stage"),f=$("flash");let x0=null,y0=null,dx=0,moved=false,activeId=null;
+  st.addEventListener("pointerdown",e=>{
+    if(!f.classList.contains("flipped"))return;
+    x0=e.clientX;y0=e.clientY;dx=0;moved=false;activeId=e.pointerId;
+    try{st.setPointerCapture(activeId)}catch(err){}
+  });
+  st.addEventListener("pointermove",e=>{
+    if(x0===null||e.pointerId!==activeId||!f.classList.contains("flipped"))return;
+    dx=e.clientX-x0;const dy=e.clientY-y0;
+    if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)){
+      moved=true;
+      st.style.transform=`translateX(${dx}px) rotate(${dx/30}deg)`;
+      st.style.opacity=String(1-Math.min(.5,Math.abs(dx)/500));
+    }
+  });
+  function end(e){
+    if(x0===null)return;
+    st.style.transform="";st.style.opacity="";
+    if(moved&&Math.abs(dx)>90)answer(dx>0);
+    if(moved){const block=ev=>{ev.stopPropagation();ev.preventDefault()};f.addEventListener("click",block,{capture:true,once:true});setTimeout(()=>f.removeEventListener("click",block,{capture:true}),350)}
+    x0=null;activeId=null;
+  }
+  st.addEventListener("pointerup",end);
+  st.addEventListener("pointercancel",end);
 })();
 
 /* ---------- Deck sheet ---------- */
@@ -532,9 +644,9 @@ function openDeck(id){
   openId=id;const d=state.decks.find(x=>x.id===id);const p=state.prefs[id]||{};
   $("dsName").textContent=d.name;
   const known=d.cards.filter(c=>lvl(d.id,c.q)>=MASTER).length;
-  $("dsMeta").textContent=`${esc(normalizeGroup(d).join(" › "))} · ${d.cards.length} kort · ${known} kan du`;
+  $("dsMeta").textContent=t("dsMeta",normalizeGroup(d).join(" › "),d.cards.length,known);
   $("dsReverse").checked=!!p.reverse;$("dsAll").checked=!!p.all;
-  $("dsList").innerHTML=d.cards.map(c=>{const l=lvl(d.id,c.q);return `<div class="it"><span class="lvl">${l>=MASTER?"Kan":l?"Nivå "+l:"Ny"}</span><div class="q">${esc(c.q)}</div><div class="a">${esc(c.a)}</div></div>`}).join("");
+  $("dsList").innerHTML=d.cards.map(c=>{const l=lvl(d.id,c.q);return `<div class="it"><span class="lvl">${l>=MASTER?t("lvlKnown"):l?t("lvlN",l):t("lvlNew")}</span><div class="q">${esc(c.q)}</div><div class="a">${esc(c.a)}</div></div>`}).join("");
   $("deckSheet").classList.remove("hidden");
 }
 function setPref(k,v){state.prefs[openId]=Object.assign({},state.prefs[openId],{[k]:v});persist()}
@@ -542,17 +654,17 @@ $("dsReverse").onchange=e=>setPref("reverse",e.target.checked);
 $("dsAll").onchange=e=>setPref("all",e.target.checked);
 $("dsClose").onclick=()=>{$("deckSheet").classList.add("hidden");renderHome()};
 $("deckSheet").onclick=e=>{if(e.target.id==="deckSheet")$("dsClose").onclick()};
-$("dsReset").onclick=()=>{const d=state.decks.find(x=>x.id===openId);if(!confirm("Nollställa framstegen för "+d.name+"?"))return;d.cards.forEach(c=>delete state.progress[key(d.id,c.q)]);persist();openDeck(openId);toast("Framstegen nollställda")};
-$("dsDelete").onclick=()=>{const d=state.decks.find(x=>x.id===openId);if(!confirm("Ta bort "+d.name+"?"))return;state.decks=state.decks.filter(x=>x.id!==openId);Object.keys(state.progress).forEach(k=>{if(k.startsWith(openId+"::"))delete state.progress[k]});persist();$("deckSheet").classList.add("hidden");renderHome();toast("Kortleken borttagen")};
-$("dsCopy").onclick=async()=>{const d=state.decks.find(x=>x.id===openId);const t=d.cards.map(c=>c.q.replace(/\n/g," ")+" | "+c.a.replace(/\n/g," / ")).join("\n");
-  try{await navigator.clipboard.writeText(t);toast("Kopierat")}catch(e){$("dsList").insertAdjacentHTML("afterbegin",`<textarea style="min-height:140px">${esc(t)}</textarea>`)}};
+$("dsReset").onclick=()=>{const d=state.decks.find(x=>x.id===openId);if(!confirm(t("confirmResetProgress",d.name)))return;d.cards.forEach(c=>delete state.progress[key(d.id,c.q)]);persist();openDeck(openId);toast(t("toastProgressReset"))};
+$("dsDelete").onclick=()=>{const d=state.decks.find(x=>x.id===openId);if(!confirm(t("confirmDeleteDeck",d.name)))return;state.decks=state.decks.filter(x=>x.id!==openId);Object.keys(state.progress).forEach(k=>{if(k.startsWith(openId+"::"))delete state.progress[k]});persist();$("deckSheet").classList.add("hidden");renderHome();toast(t("toastDeckDeleted"))};
+$("dsCopy").onclick=async()=>{const d=state.decks.find(x=>x.id===openId);const dump=d.cards.map(c=>c.q.replace(/\n/g," ")+" | "+c.a.replace(/\n/g," / ")).join("\n");
+  try{await navigator.clipboard.writeText(dump);toast(t("toastCopied"))}catch(e){$("dsList").insertAdjacentHTML("afterbegin",`<textarea style="min-height:140px">${esc(dump)}</textarea>`)}};
 
 /* ---------- Multi-deck sheet ---------- */
 function openMulti(){
   const list=$("multiList");list.innerHTML="";
   state.decks.forEach(d=>{
     const row=document.createElement("label");row.className="multiRow";
-    row.innerHTML=`<input type="checkbox" data-id="${esc(d.id)}"><span><span class="nm">${esc(d.name)}</span><span class="grp">${esc(normalizeGroup(d).join(" › "))} · ${d.cards.length} kort</span></span>`;
+    row.innerHTML=`<input type="checkbox" data-id="${esc(d.id)}"><span><span class="nm">${esc(d.name)}</span><span class="grp">${esc(t("multiRowMeta",normalizeGroup(d).join(" › "),d.cards.length))}</span></span>`;
     list.appendChild(row);
   });
   $("multiAll").checked=false;
@@ -563,7 +675,7 @@ $("multiCancel").onclick=()=>$("multiSheet").classList.add("hidden");
 $("multiSheet").onclick=e=>{if(e.target.id==="multiSheet")$("multiSheet").classList.add("hidden")};
 $("multiStart").onclick=()=>{
   const ids=[...document.querySelectorAll('#multiList input[type=checkbox]:checked')].map(c=>c.dataset.id);
-  if(!ids.length){toast("Välj minst en kortlek");return}
+  if(!ids.length){toast(t("multiSelectAtLeastOne"));return}
   $("multiSheet").classList.add("hidden");
   startStudyMulti(ids,{all:$("multiAll").checked});
 };
@@ -571,13 +683,13 @@ $("multiStart").onclick=()=>{
 /* ---------- Import ---------- */
 function parseInput(text,fallbackName){
   text=text.replace(/^\uFEFF/,"").trim();
-  if(!text)throw new Error("Klistra in minst ett kort.");
+  if(!text)throw new Error(t("errPasteCard"));
   if(text[0]==="{"||text[0]==="["){
-    let j;try{j=JSON.parse(text)}catch(e){throw new Error("JSON-texten går inte att läsa. Kontrollera kommatecken och citattecken.")}
+    let j;try{j=JSON.parse(text)}catch(e){throw new Error(t("errJson"))}
     if(j&&j.decks&&j.progress&&Array.isArray(j.decks)&&j.decks[0]&&j.decks[0].id){
-      if(!confirm("Återställa hela säkerhetskopian? Nuvarande kortlekar och framsteg ersätts."))throw new Error("Avbrutet.");
+      if(!confirm(t("confirmRestoreBackup")))throw new Error(t("errCancelled"));
       j.decks.forEach(d=>{d.group=normalizeGroup(d);delete d.subject});
-      state=j;persist();renderHome();throw new Error("Återställt!");
+      state=j;persist();renderHome();throw new Error(t("errRestored"));
     }
     const list=Array.isArray(j)?(j.length&&j[0].cards?j:[{name:fallbackName,cards:j}]):(Array.isArray(j.decks)?j.decks:[j]);
     return list.map(d=>({name:(d.name||fallbackName||"").trim(),cards:(d.cards||[]).map(c=>Array.isArray(c)?{q:c[0],a:c[1]}:{q:c.q??c.question??c.fråga??c.front,a:c.a??c.answer??c.svar??c.back}).filter(c=>c.q&&c.a).map(c=>({q:String(c.q).trim(),a:String(c.a).trim()}))}));
@@ -591,7 +703,7 @@ function parseInput(text,fallbackName){
     const q=parts[0].trim(),a=parts[1].trim().replace(/\s\/\s/g,"\n");
     if(q&&a)cards.push({q,a});else bad.push(i+1);
   });
-  if(bad.length&&!cards.length)throw new Error("Hittade inga kort. Varje rad behöver ett | mellan fråga och svar.");
+  if(bad.length&&!cards.length)throw new Error(t("errNoCards"));
   return [{name,cards,bad}];
 }
 function parseGroupPath(text){
@@ -601,8 +713,8 @@ function parseGroupPath(text){
 function importDecks(decks,groupPath){
   let added=0,updated=0;
   decks.forEach(n=>{
-    if(!n.name)throw new Error("Ge kortleken ett namn.");
-    if(!n.cards.length)throw new Error("Kortleken ”"+n.name+"” har inga kort.");
+    if(!n.name)throw new Error(t("errDeckName"));
+    if(!n.cards.length)throw new Error(t("errDeckNoCards",n.name));
     const ex=state.decks.find(d=>d.name.trim().toLowerCase()===n.name.toLowerCase());
     if(ex){ex.cards=n.cards;if(groupPath)ex.group=groupPath;updated++}
     else{state.decks.push({id:"d"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:n.name,group:groupPath||[DEFAULT_SUBJECT],cards:n.cards});added++}
@@ -618,16 +730,16 @@ $("impSave").onclick=()=>{
   try{
     const parsed=parseInput($("impText").value,$("impName").value.trim());
     const r=importDecks(parsed,parseGroupPath($("impSubject").value));
-    const bad=parsed[0].bad&&parsed[0].bad.length?` (hoppade över rad ${parsed[0].bad.slice(0,5).join(", ")})`:"";
+    const bad=parsed[0].bad&&parsed[0].bad.length?t("skippedLines",parsed[0].bad.slice(0,5).join(", ")):"";
     $("importSheet").classList.add("hidden");$("impText").value="";$("impName").value="";$("impSubject").value="";
-    toast((r.updated?"Kortleken uppdaterad":"Kortleken sparad")+bad);
+    toast((r.updated?t("deckUpdated"):t("deckSaved"))+bad);
   }catch(e){$("impErr").textContent=e.message}
 };
 $("impFile").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$("impText").value=r.result;if(!$("impName").value)$("impName").value=f.name.replace(/\.[^.]+$/,"")};r.readAsText(f);e.target.value=""};
 
-$("backupBtn").onclick=async()=>{const t=JSON.stringify(state);
-  try{await navigator.clipboard.writeText(t);toast("Säkerhetskopia kopierad. Klistra in den under Lägg till kortlek för att återställa.")}
-  catch(e){$("impText").value=t;openImport()}};
+$("backupBtn").onclick=async()=>{const dump=JSON.stringify(state);
+  try{await navigator.clipboard.writeText(dump);toast(t("backupCopied"))}
+  catch(e){$("impText").value=dump;openImport()}};
 
 /* ---------- Misc ---------- */
 let tt;function toast(m){const t=$("toast");t.textContent=m;t.classList.remove("hidden");clearTimeout(tt);tt=setTimeout(()=>t.classList.add("hidden"),2400)}
@@ -637,7 +749,12 @@ let tt;function toast(m){const t=$("toast");t.textContent=m;t.classList.remove("
   $("themeBtn").onclick=()=>{const dark=document.documentElement.dataset.theme?document.documentElement.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
     const n=dark?"light":"dark";document.documentElement.dataset.theme=n;try{localStorage.setItem("begrepp.theme",n)}catch(e){}};
 })();
+(function lang(){
+  try{const saved=localStorage.getItem("begrepp.lang");if(saved==="en"||saved==="sv")LANG=saved}catch(e){}
+  $("langBtn").onclick=()=>{LANG=LANG==="sv"?"en":"sv";try{localStorage.setItem("begrepp.lang",LANG)}catch(e){}applyLang();renderHome()};
+})();
 
+applyLang();
 renderHome();
 })();
 </script>

@@ -8,6 +8,9 @@
 - [ ] Add a stable card id so editing a question no longer resets its progress.
 
 ## Study experience
+- [x] Swipe gesture now uses Pointer Events instead of touch-only handlers, so dragging to grade a card works with a mouse on desktop too, not just touch.
+- [x] Clearer Igen/Kunde buttons: two-line labels with an icon + a short "what this does" subtitle (↺ Igen / Öva mer, ✓ Kunde / Jag kunde svaret) instead of single bare words.
+- [x] English/Swedish UI language toggle (`#langBtn`, top-right of `#home`), persisted in `localStorage["begrepp.lang"]`. Translates UI chrome only — deck/card content stays as authored.
 - [ ] Proper spaced repetition (due dates, intervals) instead of simple levels.
 - [ ] Study-all-decks mode and per-session length setting.
 - [ ] Typed-answer / multiple-choice mode (the book has "Vilka hör ihop?" matching exercises).
