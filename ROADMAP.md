@@ -1,0 +1,26 @@
+# Roadmap
+
+## Next up
+- [ ] Make it a real offline PWA: `manifest.webmanifest`, service worker caching `index.html`, apple-touch-icon, self-hosted fonts (or system fonts only).
+- [ ] Remove the claude.ai-only `connect()` sync block (or keep behind a flag).
+- [ ] Fix backup restore UX (close sheet + toast instead of the error line).
+- [ ] Remove the duplicate `#count` assignment in `showCard()`.
+- [ ] Add a stable card id so editing a question no longer resets its progress.
+
+## Study experience
+- [ ] Proper spaced repetition (due dates, intervals) instead of simple levels.
+- [ ] Study-all-decks mode and per-session length setting.
+- [ ] Typed-answer / multiple-choice mode (the book has "Vilka hör ihop?" matching exercises).
+- [ ] Concept-map prompts for the "Arbeta med begrepp" terms.
+- [ ] Stats: streaks, cards learned per day.
+
+## Content
+- [x] Group decks by subject/chapter on the home screen (collapsible `<details>` sections) so adding more decks doesn't crowd `#home`.
+- [ ] Add next chapters as decks (photo -> cards workflow in `docs/DECK_FORMAT.md`), tagging each with its `subject`.
+- [ ] Add images for diagrams (kidney, antibiotic resistance, excretory system) as inline SVG or data URIs.
+- [ ] Optional deck files under `decks/*.json`, loaded at startup, so content updates don't require editing `index.html`.
+
+## Quality
+- [ ] Small Node test for `parseInput` / `importDecks`.
+- [ ] Accessibility pass (VoiceOver labels, focus order in sheets).
+- [ ] Download backup as a `.json` file in addition to clipboard.

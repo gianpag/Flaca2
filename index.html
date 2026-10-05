@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Begrepp">
+<title>Begrepp – flashcards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Literata:opsz,wght@7..72,400;7..72,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ECE9F1; --card:#FFFFFF; --ink:#1E1923; --muted:#6B6472; --line:#D6D0DD;
+  --tag:#F3E21B; --tagInk:#2A2600; --plum:#6E2A63; --plumSoft:#E7D9E4;
+  --good:#1E6B47; --again:#A23B2C;
+  --ui:"Bricolage Grotesque", ui-rounded, system-ui, -apple-system, sans-serif;
+  --read:"Literata", Georgia, "Times New Roman", serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#17141B; --card:#241F2A; --ink:#EEE9F2; --muted:#A79FAE; --line:#3A3341;
+    --tag:#E9D816; --tagInk:#211E00; --plum:#D29AC6; --plumSoft:#3B2737;
+    --good:#5CC394; --again:#EB7D6C;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#17141B; --card:#241F2A; --ink:#EEE9F2; --muted:#A79FAE; --line:#3A3341;
+  --tag:#E9D816; --tagInk:#211E00; --plum:#D29AC6; --plumSoft:#3B2737;
+  --good:#5CC394; --again:#EB7D6C;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:17px;line-height:1.4;-webkit-tap-highlight-color:transparent}
+button,textarea,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--plum);outline-offset:2px}
+.wrap{max-width:560px;margin:0 auto;padding:20px 18px 40px}
+.hidden{display:none!important}
+
+/* Home */
+.mast{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:8px 0 22px}
+.mast h1{font-size:2.6rem;line-height:.95;font-weight:800;letter-spacing:-.03em;margin:0}
+.mast h1 .sticker{display:inline-block;background:var(--tag);color:var(--tagInk);padding:.08em .22em .12em;transform:rotate(-2.5deg);box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.iconbtn{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:8px 14px;font-weight:600;font-size:.95rem}
+.decks{display:flex;flex-direction:column;gap:14px}
+.subject{border:0;padding:0}
+.subject>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:4px 2px;font-weight:700;font-size:1.05rem}
+.subject>summary::-webkit-details-marker{display:none}
+.subject>summary .chev{display:inline-block;transition:transform .2s;color:var(--muted);font-size:.85em}
+.subject[open]>summary .chev{transform:rotate(90deg)}
+.subject>summary .subMeta{margin-left:auto;color:var(--muted);font-weight:600;font-size:.85rem}
+.subject .deckList{display:flex;flex-direction:column;gap:12px;margin-top:10px}
+.deck{background:var(--card);border-radius:14px;padding:16px 16px 14px;border-left:6px solid var(--plum)}
+.deck h2{font-size:1.15rem;margin:0 0 2px;font-weight:600;line-height:1.25}
+.deck .meta{color:var(--muted);font-size:.9rem}
+.bar{height:6px;background:var(--plumSoft);border-radius:3px;margin:12px 0 12px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--plum);border-radius:3px;transition:width .4s}
+.deck .row{display:flex;gap:8px;flex-wrap:wrap}
+.primary{background:var(--ink);color:var(--bg);border:0;border-radius:10px;padding:11px 18px;font-weight:600}
+.ghost{background:transparent;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font-weight:600}
+.addDeck{width:100%;margin-top:14px;padding:16px;border:2px dashed var(--line);border-radius:14px;background:transparent;font-weight:600;color:var(--muted)}
+.foot{color:var(--muted);font-size:.85rem;margin-top:26px}
+
+/* Study */
+.studyTop{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.studyTop .count{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--muted);font-weight:600}
+.studyTitle{font-weight:600;font-size:.95rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stage{perspective:1400px;touch-action:pan-y}
+.flash{position:relative;height:min(62vh,460px);transform-style:preserve-3d;transition:transform .45s cubic-bezier(.3,.7,.2,1);cursor:pointer}
+.flash.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;background:var(--card);border-radius:18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:26px 22px;display:flex;flex-direction:column;overflow:auto;box-shadow:0 1px 0 var(--line),0 14px 30px -18px rgba(40,20,50,.35)}
+.face.back{transform:rotateY(180deg)}
+.face .kind{align-self:flex-start;background:var(--tag);color:var(--tagInk);font-weight:600;font-size:.85rem;padding:3px 10px;transform:rotate(-2deg)}
+.face.back .kind{background:var(--plumSoft);color:var(--plum)}
+.face .txt{font-family:var(--read);margin:auto 0;font-size:1.45rem;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.face.back .txt{font-size:1.15rem;line-height:1.6}
+.face .hint{color:var(--muted);font-size:.85rem;text-align:center}
+.answerRow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.answerRow button{border:0;border-radius:14px;padding:16px 10px;font-weight:700;font-size:1.05rem}
+.again{background:color-mix(in srgb,var(--again) 16%,var(--card));color:var(--again)}
+.good{background:color-mix(in srgb,var(--good) 16%,var(--card));color:var(--good)}
+.answerRow button:disabled{opacity:.35}
+.swipeHint{text-align:center;color:var(--muted);font-size:.82rem;margin-top:10px}
+.done{background:var(--card);border-radius:18px;padding:28px 22px;text-align:center}
+.done h2{font-size:1.6rem;margin:0 0 6px}
+.done p{color:var(--muted);margin:0 0 18px}
+
+/* Sheets */
+.sheet{position:fixed;inset:0;background:rgba(20,10,25,.45);display:flex;align-items:flex-end;justify-content:center;z-index:10}
+.panel{background:var(--bg);width:100%;max-width:560px;max-height:92%;overflow:auto;border-radius:18px 18px 0 0;padding:18px 18px calc(20px + env(safe-area-inset-bottom,0px))}
+.panel h2{margin:0 0 6px;font-size:1.35rem}
+.panel p{color:var(--muted);margin:0 0 12px;font-size:.92rem}
+.panel input,.panel textarea{width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:10px}
+.panel textarea{min-height:200px;font-family:ui-monospace,Menlo,monospace;font-size:.85rem;line-height:1.45}
+.panel .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.panel pre{background:var(--card);border-radius:10px;padding:10px 12px;font-size:.8rem;overflow-x:auto;margin:0 0 12px}
+.err{color:var(--again);font-size:.9rem;min-height:1.2em;margin-bottom:6px}
+.list{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.list .it{background:var(--card);border-radius:10px;padding:10px 12px}
+.list .q{font-weight:600}
+.list .a{font-family:var(--read);color:var(--muted);font-size:.92rem;margin-top:3px;white-space:pre-wrap}
+.lvl{float:right;font-size:.75rem;color:var(--plum);font-weight:600}
+.danger{color:var(--again)}
+label.toggle{display:flex;align-items:center;gap:10px;font-weight:600;margin:6px 0}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;font-size:.9rem;z-index:20}
+@media (prefers-reduced-motion:reduce){.flash{transition:none}.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section id="home">
+    <div class="mast">
+      <h1>Plugga<br><span class="sticker">begrepp</span></h1>
+      <button class="iconbtn" id="themeBtn" aria-label="Byt tema">◐</button>
+    </div>
+    <noscript><div class="deck"><h2>Korten kan inte visas här</h2><div class="meta">Den här förhandsvisningen kör inte appen. Öppna länken i Safari i stället.</div></div></noscript>
+    <div class="decks" id="decks"></div>
+    <button class="addDeck" id="importBtn">+ Lägg till eller uppdatera kortlek</button>
+    <p class="foot" id="syncNote">Dina framsteg sparas på den här enheten.</p>
+    <button class="ghost" id="backupBtn">Kopiera säkerhetskopia</button>
+  </section>
+
+  <section id="study" class="hidden">
+    <div class="studyTop">
+      <button class="iconbtn" id="backBtn">← Klar</button>
+      <span class="studyTitle" id="studyTitle"></span>
+      <span class="count" id="count"></span>
+    </div>
+    <div id="cardArea">
+      <div class="stage" id="stage">
+        <div class="flash" id="flash" role="button" tabindex="0" aria-label="Vänd kortet">
+          <div class="face front"><span class="kind">Fråga</span><div class="txt" id="qTxt"></div><div class="hint">Tryck för att vända</div></div>
+          <div class="face back"><span class="kind">Svar</span><div class="txt" id="aTxt"></div></div>
+        </div>
+      </div>
+      <div class="answerRow">
+        <button class="again" id="againBtn" disabled>Igen</button>
+        <button class="good" id="goodBtn" disabled>Kunde</button>
+      </div>
+      <div class="swipeHint">Svep vänster för Igen, höger för Kunde</div>
+    </div>
+    <div class="done hidden" id="doneBox">
+      <h2>Klart!</h2>
+      <p id="doneTxt"></p>
+      <div class="row" style="justify-content:center;display:flex;gap:8px">
+        <button class="primary" id="againRound">Kör en runda till</button>
+        <button class="ghost" id="doneHome">Till listan</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Import sheet -->
+<div class="sheet hidden" id="importSheet">
+  <div class="panel">
+    <h2>Lägg till kortlek</h2>
+    <p>Klistra in kort, en per rad: <b>fråga | svar</b>. Du kan också använda tab eller semikolon, eller JSON. Har kortleken samma namn som en befintlig ersätts korten, men framstegen för oförändrade frågor behålls.</p>
+    <input id="impName" placeholder="Namn på kortleken, t.ex. Kap 4 – Kemi">
+    <input id="impSubject" placeholder="Ämne/kapitel (för att gruppera), t.ex. Kapitel 4 – Kemi">
+    <textarea id="impText" placeholder="Vad är en atom? | Den minsta byggstenen i ett grundämne.
+Vad är en molekyl? | Två eller fler atomer som sitter ihop."></textarea>
+    <div class="err" id="impErr"></div>
+    <div class="row">
+      <button class="primary" id="impSave">Spara kortlek</button>
+      <label class="ghost" style="display:inline-block">Välj fil…<input type="file" id="impFile" accept=".json,.txt,.csv,.tsv,text/*" class="hidden"></label>
+      <button class="ghost" id="impCancel">Avbryt</button>
+    </div>
+    <p style="margin-top:16px">Tips: fotografera nya sidor i boken och be Claude göra om dem till rader i formatet ovan. JSON-format:</p>
+    <pre>{"name":"Kap 4","cards":[{"q":"Fråga","a":"Svar"}]}</pre>
+  </div>
+</div>
+
+<!-- Deck sheet -->
+<div class="sheet hidden" id="deckSheet">
+  <div class="panel">
+    <h2 id="dsName"></h2>
+    <p id="dsMeta"></p>
+    <label class="toggle"><input type="checkbox" id="dsReverse"> Visa svaret först (omvänt)</label>
+    <label class="toggle"><input type="checkbox" id="dsAll"> Öva alla kort, även de jag kan</label>
+    <div class="row" style="margin-top:8px">
+      <button class="ghost" id="dsCopy">Kopiera som text</button>
+      <button class="ghost" id="dsReset">Nollställ framsteg</button>
+      <button class="ghost danger" id="dsDelete">Ta bort</button>
+    </div>
+    <div class="list" id="dsList"></div>
+    <button class="primary" id="dsClose" style="width:100%">Stäng</button>
+  </div>
+</div>
+
+<div class="toast hidden" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+
+/* ---------- Seed decks (Kapitel 3, s. 186–193) ---------- */
+const SEED=[
+{id:"kap3-immun",name:"Immunsystemet – inre försvar",subject:"Kapitel 3 – Kroppen",src:"Kap 3, s. 186–191",cards:[
+["Vilka är kroppens tre försvarslinjer?","1. Huden och slemhinnorna (yttre skydd)\n2. Inflammation\n3. Immunförsvaret"],
+["Vad är ett smittämne?","Något som kan orsaka sjukdom, t.ex. bakterier, mikroskopiska svampar, maskar och virus."],
+["Vad kallas en sjukdom som orsakas av ett smittämne?","Infektion eller smittsjukdom."],
+["Vad ingår i den första försvarslinjen?","Huden och slemhinnorna i luftvägarna, mag-tarmkanalen, urinröret och slidan."],
+["Hur kan en inflammation uppstå?","När vävnad skadas: skärsår, skavsår, överbelastad muskel, stark solstrålning, sträng kyla eller värme, eller ett bakterie- eller virusangrepp."],
+["Vad gör en inflammation?","Begränsar skador, tar bort skadliga ämnen och sätter igång läkningen."],
+["Hur blir vävnaden vid en inflammation?","Röd, svullen, varm, öm – och den fungerar sämre."],
+["Vad betyder ordet inflammation?","”Att sätta i brand”."],
+["Varför blir det varmt och ömt vid en inflammation?","Blodtillförseln ökar och ämnen som orsakar smärta släpps ut."],
+["Vad består var av?","Vita blodkroppar tillsammans med döda bakterier och döda celler från vävnaden. Var är grönt eller gult."],
+["Vad är immunförsvaret?","Den tredje försvarslinjen – ett riktat försvar mot specifika smittämnen. Består av miljarder vita blodkroppar och antikroppar."],
+["Vad är antikroppar?","Stora ”målsökande” proteiner som kan upptäcka och binda till miljontals olika smittämnen."],
+["Vad orsakar infektionssjukdomar?","Bakterier, virus, svampar eller encelliga djur."],
+["Vad är inkubationstid?","Tiden mellan smittotillfället och då sjukdomen bryter ut."],
+["Halsfluss: orsak, smittväg och inkubationstid?","Streptokockbakterie. Direktkontakt. 2–4 dagar.\nSymtom: halsont, feber, svullna lymfknutor."],
+["Influensa: orsak, smittväg och inkubationstid?","Influensavirus. Genom luften och via direktkontakt. 1–4 dagar.\nSymtom: feber, hosta, halsont, muskel- och huvudvärk."],
+["Covid-19: orsak, smittväg och inkubationstid?","Coronavirus. Genom luften och via direktkontakt. 2–14 dagar.\nSymtom: hosta, feber, huvudvärk, andningsbesvär, trötthet."],
+["Malaria: orsak, smittväg och inkubationstid?","En parasit. Sprids via myggor. 1–4 veckor.\nSymtom: feber, frossa, muskel-, led- och huvudvärk."],
+["Svampinfektion (Candida): vad är det och när uppstår den?","Candida är en mikroskopisk jästsvamp. Uppstår vid nedsatt immunförsvar eller behandling med antibiotika. Inkubationstid upp till 2 veckor.\nSymtom: torr hud, utslag, klåda, rodnade slemhinnor med vita beläggningar."],
+["Vad är en epidemi?","När en infektionssjukdom sprider sig och allt fler blir sjuka."],
+["Vad är en pandemi? Ge exempel.","En epidemi som sprider sig över stora delar av världen. T.ex. digerdöden (1300-talet), spanska sjukan (1918–20) och coronapandemin (2020)."],
+["Varför heter det coronavirus?","Viruset har små piggar som liknar en kungakrona. Corona betyder krona på latin."],
+["Vad gör ätarceller?","De är vita blodkroppar som äter upp smittämnen och skadade celler."],
+["Vad gör letarceller?","Letar upp smittämnen, identifierar dem och samordnar försvaret. Vissa tillverkar antikroppar."],
+["Var bildas de vita blodkropparna?","I skelettets benmärg."],
+["Vad är antibiotika?","Läkemedel som behandlar infektioner orsakade av bakterier."],
+["Vem upptäckte penicillinet och när?","Alexander Fleming, år 1928."],
+["Vad är resistens?","När bakterier utvecklar motståndskraft mot behandlingen med antibiotika."],
+["Vad är den biologiska orsaken till antibiotikaresistens?","Naturligt urval. När bakterier kopierar sitt DNA kan förändringar i generna ge resistens. De resistenta bakterierna överlever behandlingen och fortsätter dela sig."],
+["Vad är den främsta anledningen till att allt fler bakterier blir resistenta?","Att antibiotika används för mycket – t.ex. mot virusinfektioner och i djurhållning för att öka tillväxten."],
+["Kan virussjukdomar behandlas med antibiotika?","Nej. Antibiotika fungerar bara mot bakterier."],
+["Varför är antibiotikaresistens ett allvarligt hot?","Infektioner kan inte behandlas. Det hotar hälsa, bekämpning av fattigdom, tillgång på mat, jämställdhet och ekonomisk tillväxt i hela världen."],
+["Hur kan vi motverka antibiotikaresistens?","Förebygga infektioner (bättre vatten- och avloppssystem, handhygien), bara använda antibiotika vid risk för allvarlig sjukdom och ta fram nya läkemedel."],
+["Vad innebär det att vara immun?","Immunförsvaret har ett skydd mot ett visst smittämne, ofta hela livet, eftersom vissa immunceller har blivit minnesceller."],
+["Vad är minnesceller?","Vita blodkroppar i blodet som minns ett smittämne och hela tiden är redo att ingripa mot det."],
+["Vad är en vaccination?","Man får ett dött eller mycket svagt smittämne (eller en del av det) i kroppen. De vita blodkropparna reagerar och bygger upp ett långvarigt minne."],
+["Ge exempel på infektioner man kan vaccinera sig mot.","Stelkramp, polio, mässling, covid-19, kikhosta och HPV (erbjuds i årskurs 5)."],
+["Vilken sjukdom har utrotats i världen tack vare vaccinationer?","Smittkoppor."],
+["Vad är allergi?","En överkänslighet mot vissa ämnen som kroppen felaktigt uppfattar som smittämnen."],
+["Ge exempel på ämnen som kan ge allergi.","Katthår, pollen, choklad, jordgubbar, nötter, ägg och mjölk."],
+["Vilka är vanliga allergireaktioner?","Eksem, astma, hösnuva, utslag och rinnande ögon."],
+["Vad är histamin?","Ett ämne som frigörs när t.ex. pollen kommer i kontakt med slemhinnorna. Det framkallar de allergiska reaktionerna."],
+["Vad är kontaktallergi?","Överkänslighet mot ämnen som kommer i kontakt med huden, t.ex. nickel i smycken."]
+]},
+{id:"kap3-utsondring",name:"Transport via utsöndring",subject:"Kapitel 3 – Kroppen",src:"Kap 3, s. 192–193",cards:[
+["Vilka tre organ renar blodet?","Njurarna, levern och lungorna."],
+["Vilket avfall tar lungorna hand om?","Koldioxid – vi andas ut den."],
+["Vilket avfall tar levern hand om?","Gifter från maten – levern bryter ner giftiga ämnen."],
+["Vilket avfall tar njurarna hand om?","Gifter (avfallsprodukter) från cellerna – de bildar urin."],
+["Vilka delar består utsöndringssystemet av?","Njurar, urinledare, urinblåsa och urinrör."],
+["Var i kroppen finns njurarna?","På ryggsidan, högt uppe i bukhålan, i höjd med de nedersta revbenen."],
+["Hur stora är njurarna?","Ungefär lika långa som ditt långfinger."],
+["Varför får njurarna mest blod av alla organ?","Blodet måste hela tiden renas i njurarna, annars lagras giftiga avfallsprodukter i kroppen."],
+["Vad filtrerar njurarna bort från blodet?","En del av plasman med vatten, glukos, salter och urinämne. Blodkroppar och proteiner stannar kvar i blodet."],
+["Hur mycket vätska filtrerar njurarna per dygn, och hur mycket kissar vi?","Ungefär 180 liter filtreras. Det mesta förs tillbaka till blodet, så vi kissar bara ca 1–2 liter om dagen."],
+["Vad gör urinledarna?","För urinen från njurarna till urinblåsan."],
+["Hur mycket rymmer urinblåsan?","Mer än en halv liter – den är mycket elastisk."],
+["Vad händer när du kissar?","Du låter muskeln runt urinröret slappna av. Samtidigt drar urinblåsan ihop sig och urinen pressas ut genom urinröret."],
+["Var mynnar urinröret?","Hos mannen i slutet av penis, hos kvinnan strax framför slidmynningen."],
+["Hur påverkar njurarna blodtrycket?","När blodtrycket sjunker producerar njurarna ett hormon som gör att mindre vätska försvinner som urin. Mer vätska i blodet → blodtrycket stiger."],
+["Vad händer med urinen om du svettas mycket?","Du kissar mindre och urinen blir mörkare och mer koncentrerad."],
+["Vilka blodkärl är kopplade till njuren?","En artär för blodet in och en ven för det renade blodet ut. Urinen lämnar njuren via urinledaren."]
+]}
+];
+
+/* ---------- State ---------- */
+const LS="begrepp.v1";
+let state=null;
+const DEFAULT_SUBJECT="Övrigt";
+function seedState(){
+  return {updatedAt:Date.now(),decks:SEED.map(d=>({id:d.id,name:d.name,subject:d.subject||DEFAULT_SUBJECT,src:d.src,cards:d.cards.map(([q,a])=>({q,a}))})),progress:{},prefs:{}};
+}
+function loadLocal(){try{const r=localStorage.getItem(LS);if(r){const s=JSON.parse(r);if(s&&Array.isArray(s.decks)){s.decks.forEach(d=>{if(!d.subject)d.subject=DEFAULT_SUBJECT});return s}}}catch(e){}return null}
+function saveLocal(){try{localStorage.setItem(LS,JSON.stringify(state))}catch(e){}}
+state=loadLocal()||seedState();
+
+let dbRef=null,saveTimer=null;
+function persist(){
+  state.updatedAt=Date.now();
+  saveLocal();
+  if(dbRef){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{dbRef.set({json:JSON.stringify(state),updatedAt:state.updatedAt}).catch(()=>{})},800)}
+}
+(async function connect(){
+  try{
+    if(!window.claude||!window.claude.use)return;
+    const [db,user]=await Promise.all([window.claude.use("db"),window.claude.use("user")]);
+    if(!db||!user)return;
+    const uid=await user.id(); if(!uid)return;
+    const ref=db.collection("data/users/"+uid).doc("flashcards");
+    const snap=await ref.get();
+    if(snap.exists){
+      const d=snap.data();
+      try{const remote=JSON.parse(d.json); if(remote&&Array.isArray(remote.decks)&&(remote.updatedAt||0)>(state.updatedAt||0)){state=remote;saveLocal();renderHome()}}catch(e){}
+    }
+    dbRef=ref;
+    if(!snap.exists||(JSON.parse(snap.data().json||"{}").updatedAt||0)<state.updatedAt){await ref.set({json:JSON.stringify(state),updatedAt:state.updatedAt})}
+    $("syncNote").textContent="Dina kortlekar och framsteg sparas i ditt konto, så de finns kvar på alla dina enheter.";
+  }catch(e){}
+})();
+
+const key=(deckId,q)=>deckId+"::"+q;
+const lvl=(deckId,q)=>state.progress[key(deckId,q)]||0;
+const MASTER=3;
+
+/* ---------- Home ---------- */
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function loadOpenSubjects(){try{return JSON.parse(localStorage.getItem("begrepp.openSubjects")||"{}")}catch(e){return{}}}
+function saveOpenSubjects(o){try{localStorage.setItem("begrepp.openSubjects",JSON.stringify(o))}catch(e){}}
+function renderHome(){
+  const box=$("decks");box.innerHTML="";
+  if(!state.decks.length){box.innerHTML='<p style="color:var(--muted)">Inga kortlekar än. Lägg till en nedan.</p>';return}
+  const open=loadOpenSubjects();
+  const groups=new Map();
+  state.decks.forEach(d=>{const s=d.subject||DEFAULT_SUBJECT;if(!groups.has(s))groups.set(s,[]);groups.get(s).push(d)});
+  const single=groups.size<=1;
+  groups.forEach((decks,subject)=>{
+    const allKnown=decks.reduce((n,d)=>n+d.cards.filter(c=>lvl(d.id,c.q)>=MASTER).length,0);
+    const allCards=decks.reduce((n,d)=>n+d.cards.length,0);
+    const det=document.createElement("details");det.className="subject";
+    det.open=single||open[subject]!==false;
+    det.innerHTML=`<summary><span class="chev">▸</span><span>${esc(subject)}</span><span class="subMeta">${decks.length} kortlek${decks.length===1?"":"ar"} · ${allKnown}/${allCards} kan du</span></summary><div class="deckList"></div>`;
+    det.addEventListener("toggle",()=>{const o=loadOpenSubjects();o[subject]=det.open;saveOpenSubjects(o)});
+    const listEl=det.querySelector(".deckList");
+    decks.forEach(d=>{
+      const known=d.cards.filter(c=>lvl(d.id,c.q)>=MASTER).length;
+      const pct=d.cards.length?Math.round(100*known/d.cards.length):0;
+      const el=document.createElement("div");el.className="deck";
+      el.innerHTML=`<h2>${esc(d.name)}</h2><div class="meta">${d.cards.length} kort${d.src?" · "+esc(d.src):""} · ${known} kan du</div>
+        <div class="bar" aria-label="${pct}% klart"><i style="width:${pct}%"></i></div>
+        <div class="row"><button class="primary" data-a="study">Öva</button><button class="ghost" data-a="open">Visa kort & inställningar</button></div>`;
+      el.querySelector('[data-a=study]').onclick=()=>startStudy(d.id);
+      el.querySelector('[data-a=open]').onclick=()=>openDeck(d.id);
+      listEl.appendChild(el);
+    });
+    box.appendChild(det);
+  });
+}
+
+/* ---------- Study ---------- */
+let sess=null;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function startStudy(deckId){
+  const d=state.decks.find(x=>x.id===deckId);if(!d)return;
+  const prefs=state.prefs[deckId]||{};
+  let pool=d.cards.slice();
+  if(!prefs.all){const due=pool.filter(c=>lvl(d.id,c.q)<MASTER);if(due.length)pool=due}
+  // lowest level first, shuffled within level
+  pool=shuffle(pool).sort((a,b)=>lvl(d.id,a.q)-lvl(d.id,b.q)).slice(0,20);
+  sess={deck:d,queue:pool,total:pool.length,correctFirst:0,seen:new Set(),reverse:!!prefs.reverse};
+  $("home").classList.add("hidden");$("study").classList.remove("hidden");
+  $("studyTitle").textContent=d.name;
+  $("cardArea").classList.remove("hidden");$("doneBox").classList.add("hidden");
+  window.scrollTo(0,0);
+  showCard();
+}
+function showCard(){
+  const f=$("flash");f.classList.remove("flipped");
+  $("againBtn").disabled=$("goodBtn").disabled=true;
+  if(!sess.queue.length){finish();return}
+  const c=sess.queue[0];
+  const front=sess.reverse?c.a:c.q, back=sess.reverse?c.q:c.a;
+  // wait for flip-back before swapping text so the answer never flashes
+  setTimeout(()=>{$("qTxt").textContent=front;$("aTxt").textContent=back},f.dataset.wasFlipped?220:0);
+  f.dataset.wasFlipped="";
+  const left=sess.queue.length;
+  $("count").textContent=`${sess.total-new Set(sess.queue.map(x=>x.q)).size+0}/${sess.total}`.replace(/^(\d+)/,m=>m);
+  $("count").textContent=`${left} kvar`;
+}
+function flip(){
+  const f=$("flash");f.classList.toggle("flipped");
+  if(f.classList.contains("flipped")){$("againBtn").disabled=$("goodBtn").disabled=false}
+}
+function answer(good){
+  if(!sess||!sess.queue.length)return;
+  if(!$("flash").classList.contains("flipped"))return;
+  const c=sess.queue.shift();const k=key(sess.deck.id,c.q);
+  const first=!sess.seen.has(c.q);sess.seen.add(c.q);
+  if(good){state.progress[k]=Math.min(5,(state.progress[k]||0)+1);if(first)sess.correctFirst++}
+  else{state.progress[k]=0;sess.queue.splice(Math.min(3,sess.queue.length),0,c)}
+  persist();
+  $("flash").dataset.wasFlipped="1";
+  showCard();
+}
+function finish(){
+  $("cardArea").classList.add("hidden");$("doneBox").classList.remove("hidden");
+  const d=sess.deck;const known=d.cards.filter(c=>lvl(d.id,c.q)>=MASTER).length;
+  $("doneTxt").textContent=`Du kunde ${sess.correctFirst} av ${sess.total} direkt. Totalt kan du nu ${known} av ${d.cards.length} kort.`;
+  $("count").textContent="";
+}
+function goHome(){$("study").classList.add("hidden");$("home").classList.remove("hidden");renderHome();sess=null}
+
+$("flash").onclick=flip;
+$("flash").onkeydown=e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();flip()}};
+$("againBtn").onclick=()=>answer(false);
+$("goodBtn").onclick=()=>answer(true);
+$("backBtn").onclick=goHome;$("doneHome").onclick=goHome;
+$("againRound").onclick=()=>startStudy(sess.deck.id);
+document.addEventListener("keydown",e=>{if(!sess||$("study").classList.contains("hidden"))return;if(e.key==="ArrowLeft")answer(false);if(e.key==="ArrowRight")answer(true)});
+
+// swipe
+(function(){
+  const st=$("stage"),f=$("flash");let x0=null,y0=null,dx=0,moved=false;
+  st.addEventListener("touchstart",e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY;dx=0;moved=false},{passive:true});
+  st.addEventListener("touchmove",e=>{if(x0===null)return;dx=e.touches[0].clientX-x0;const dy=e.touches[0].clientY-y0;
+    if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)&&f.classList.contains("flipped")){moved=true;st.style.transform=`translateX(${dx}px) rotate(${dx/30}deg)`;st.style.opacity=String(1-Math.min(.5,Math.abs(dx)/500))}},{passive:true});
+  st.addEventListener("touchend",()=>{st.style.transform="";st.style.opacity="";
+    if(moved&&Math.abs(dx)>90){answer(dx>0)}
+    if(moved){const block=e=>{e.stopPropagation();e.preventDefault()};f.addEventListener("click",block,{capture:true,once:true});setTimeout(()=>f.removeEventListener("click",block,{capture:true}),350)}
+    x0=null},{passive:true});
+})();
+
+/* ---------- Deck sheet ---------- */
+let openId=null;
+function openDeck(id){
+  openId=id;const d=state.decks.find(x=>x.id===id);const p=state.prefs[id]||{};
+  $("dsName").textContent=d.name;
+  const known=d.cards.filter(c=>lvl(d.id,c.q)>=MASTER).length;
+  $("dsMeta").textContent=`${esc(d.subject||DEFAULT_SUBJECT)} · ${d.cards.length} kort · ${known} kan du`;
+  $("dsReverse").checked=!!p.reverse;$("dsAll").checked=!!p.all;
+  $("dsList").innerHTML=d.cards.map(c=>{const l=lvl(d.id,c.q);return `<div class="it"><span class="lvl">${l>=MASTER?"Kan":l?"Nivå "+l:"Ny"}</span><div class="q">${esc(c.q)}</div><div class="a">${esc(c.a)}</div></div>`}).join("");
+  $("deckSheet").classList.remove("hidden");
+}
+function setPref(k,v){state.prefs[openId]=Object.assign({},state.prefs[openId],{[k]:v});persist()}
+$("dsReverse").onchange=e=>setPref("reverse",e.target.checked);
+$("dsAll").onchange=e=>setPref("all",e.target.checked);
+$("dsClose").onclick=()=>{$("deckSheet").classList.add("hidden");renderHome()};
+$("deckSheet").onclick=e=>{if(e.target.id==="deckSheet")$("dsClose").onclick()};
+$("dsReset").onclick=()=>{const d=state.decks.find(x=>x.id===openId);if(!confirm("Nollställa framstegen för "+d.name+"?"))return;d.cards.forEach(c=>delete state.progress[key(d.id,c.q)]);persist();openDeck(openId);toast("Framstegen nollställda")};
+$("dsDelete").onclick=()=>{const d=state.decks.find(x=>x.id===openId);if(!confirm("Ta bort "+d.name+"?"))return;state.decks=state.decks.filter(x=>x.id!==openId);Object.keys(state.progress).forEach(k=>{if(k.startsWith(openId+"::"))delete state.progress[k]});persist();$("deckSheet").classList.add("hidden");renderHome();toast("Kortleken borttagen")};
+$("dsCopy").onclick=async()=>{const d=state.decks.find(x=>x.id===openId);const t=d.cards.map(c=>c.q.replace(/\n/g," ")+" | "+c.a.replace(/\n/g," / ")).join("\n");
+  try{await navigator.clipboard.writeText(t);toast("Kopierat")}catch(e){$("dsList").insertAdjacentHTML("afterbegin",`<textarea style="min-height:140px">${esc(t)}</textarea>`)}};
+
+/* ---------- Import ---------- */
+function parseInput(text,fallbackName){
+  text=text.replace(/^\uFEFF/,"").trim();
+  if(!text)throw new Error("Klistra in minst ett kort.");
+  if(text[0]==="{"||text[0]==="["){
+    let j;try{j=JSON.parse(text)}catch(e){throw new Error("JSON-texten går inte att läsa. Kontrollera kommatecken och citattecken.")}
+    if(j&&j.decks&&j.progress&&Array.isArray(j.decks)&&j.decks[0]&&j.decks[0].id){
+      if(!confirm("Återställa hela säkerhetskopian? Nuvarande kortlekar och framsteg ersätts."))throw new Error("Avbrutet.");
+      j.decks.forEach(d=>{if(!d.subject)d.subject=DEFAULT_SUBJECT});
+      state=j;persist();renderHome();throw new Error("Återställt!");
+    }
+    const list=Array.isArray(j)?(j.length&&j[0].cards?j:[{name:fallbackName,cards:j}]):(Array.isArray(j.decks)?j.decks:[j]);
+    return list.map(d=>({name:(d.name||fallbackName||"").trim(),cards:(d.cards||[]).map(c=>Array.isArray(c)?{q:c[0],a:c[1]}:{q:c.q??c.question??c.fråga??c.front,a:c.a??c.answer??c.svar??c.back}).filter(c=>c.q&&c.a).map(c=>({q:String(c.q).trim(),a:String(c.a).trim()}))}));
+  }
+  const cards=[];let name=fallbackName;const bad=[];
+  text.split(/\r?\n/).forEach((line,i)=>{
+    const l=line.trim();if(!l)return;
+    let parts=null;
+    for(const sep of ["\t"," | ","|",";"]){if(l.includes(sep)){const idx=l.indexOf(sep);parts=[l.slice(0,idx),l.slice(idx+sep.length)];break}}
+    if(!parts){if(i===0&&!name){name=l.replace(/^#\s*/,"");return}bad.push(i+1);return}
+    const q=parts[0].trim(),a=parts[1].trim().replace(/\s\/\s/g,"\n");
+    if(q&&a)cards.push({q,a});else bad.push(i+1);
+  });
+  if(bad.length&&!cards.length)throw new Error("Hittade inga kort. Varje rad behöver ett | mellan fråga och svar.");
+  return [{name,cards,bad}];
+}
+function importDecks(decks,subject){
+  let added=0,updated=0;
+  decks.forEach(n=>{
+    if(!n.name)throw new Error("Ge kortleken ett namn.");
+    if(!n.cards.length)throw new Error("Kortleken ”"+n.name+"” har inga kort.");
+    const ex=state.decks.find(d=>d.name.trim().toLowerCase()===n.name.toLowerCase());
+    if(ex){ex.cards=n.cards;if(subject)ex.subject=subject;updated++}
+    else{state.decks.push({id:"d"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:n.name,subject:subject||DEFAULT_SUBJECT,cards:n.cards});added++}
+  });
+  persist();renderHome();
+  return {added,updated};
+}
+function openImport(){$("impErr").textContent="";$("importSheet").classList.remove("hidden");setTimeout(()=>$("impName").focus(),50)}
+$("importBtn").onclick=openImport;
+$("impCancel").onclick=()=>$("importSheet").classList.add("hidden");
+$("importSheet").onclick=e=>{if(e.target.id==="importSheet")$("importSheet").classList.add("hidden")};
+$("impSave").onclick=()=>{
+  try{
+    const parsed=parseInput($("impText").value,$("impName").value.trim());
+    const r=importDecks(parsed,$("impSubject").value.trim());
+    const bad=parsed[0].bad&&parsed[0].bad.length?` (hoppade över rad ${parsed[0].bad.slice(0,5).join(", ")})`:"";
+    $("importSheet").classList.add("hidden");$("impText").value="";$("impName").value="";$("impSubject").value="";
+    toast((r.updated?"Kortleken uppdaterad":"Kortleken sparad")+bad);
+  }catch(e){$("impErr").textContent=e.message}
+};
+$("impFile").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$("impText").value=r.result;if(!$("impName").value)$("impName").value=f.name.replace(/\.[^.]+$/,"")};r.readAsText(f);e.target.value=""};
+
+$("backupBtn").onclick=async()=>{const t=JSON.stringify(state);
+  try{await navigator.clipboard.writeText(t);toast("Säkerhetskopia kopierad. Klistra in den under Lägg till kortlek för att återställa.")}
+  catch(e){$("impText").value=t;openImport()}};
+
+/* ---------- Misc ---------- */
+let tt;function toast(m){const t=$("toast");t.textContent=m;t.classList.remove("hidden");clearTimeout(tt);tt=setTimeout(()=>t.classList.add("hidden"),2400)}
+(function theme(){
+  let t=null;try{t=localStorage.getItem("begrepp.theme")}catch(e){}
+  if(t)document.documentElement.dataset.theme=t;
+  $("themeBtn").onclick=()=>{const dark=document.documentElement.dataset.theme?document.documentElement.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
+    const n=dark?"light":"dark";document.documentElement.dataset.theme=n;try{localStorage.setItem("begrepp.theme",n)}catch(e){}};
+})();
+
+renderHome();
+})();
+</script>
+</body>
+</html>

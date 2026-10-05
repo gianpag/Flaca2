@@ -1,0 +1,39 @@
+# CLAUDE.md
+
+Guidance for Claude Code when working in this repo.
+
+## What this is
+A single-file flashcard web app (`index.html`) for studying Swedish school-biology concepts. It runs entirely in the browser, is hosted on GitHub Pages, and is used mainly on an iPhone (Safari, added to the Home Screen). The user-facing language is **Swedish**; code and comments are English.
+
+Initial content: *Kapitel 3 – Kroppen: rörelse, transport och försvar*, pp. 186–193 (Immunsystemet, Transport via utsöndring), seeded as two decks in the `SEED` constant.
+
+## Hard constraints
+- **One file, no build step, no dependencies.** Everything (HTML, CSS, JS, seed cards) lives in `index.html`. Do not introduce a bundler, framework, or npm packages unless the user explicitly asks.
+- **No server.** Must work as static hosting. All data lives in the browser (`localStorage`).
+- **iPhone Safari first.** Test at ~390px width. Respect safe-area insets (already set on `:root`). Tap targets >= 44px. Avoid hover-only UI.
+- **Do not break existing user data.** Saved state lives under `localStorage["begrepp.v1"]`. Any change to the state shape needs a migration in `loadLocal()`; never silently discard saved progress.
+- Keep UI strings in Swedish and consistent in tone (informal "du").
+
+## Architecture (all in `index.html`)
+- `SEED`: array of decks, each `{id, name, src, cards: [[question, answer], ...]}`.
+- `state`: `{updatedAt, decks: [{id, name, src, cards: [{q, a}]}], progress: {"<deckId>::<question>": level}, prefs: {<deckId>: {reverse, all}}}`.
+- Persistence: `persist()` -> `saveLocal()` (+ optional Claude-account sync, see below). Theme is stored separately in `localStorage["begrepp.theme"]`.
+- Study logic: `startStudy()` builds a session of up to 20 cards, lowest level first (shuffled within level), unmastered cards only unless `prefs.all`. `answer(good)`: Kunde = level +1 (cap 5); Igen = level 0 and the card is re-inserted up to 3 cards later. `MASTER = 3` counts as "kan".
+- Import: `parseInput()` accepts `question | answer` lines (also tab or `;`), JSON (`{name, cards:[{q,a}]}`, arrays, or `{decks:[...]}`), and a full backup (detected by `decks[0].id` + `progress`). `importDecks()` replaces cards of a deck with the same name (case-insensitive) or adds a new one.
+- Views: `#home`, `#study`, plus bottom sheets `#importSheet` and `#deckSheet`. Card flip is a CSS 3D transform; swipe is a touch handler on `#stage`.
+
+## Known quirks / tech debt
+- Progress is keyed by **question text**. Editing a question resets its progress.
+- `showCard()` sets `#count` twice; the first assignment is dead code and can be removed.
+- Restoring a backup reports success through the error line (`"Återställt!"`) and leaves the sheet open. Should close the sheet and show a toast.
+- The `connect()` block using `window.claude.use("db"/"user")` is for the claude.ai-hosted copy only. It is inert on GitHub Pages (guarded by `if(!window.claude...) return`). Leave it unless asked to remove it.
+- Google Fonts are loaded from the network; the CSS has system-font fallbacks so the app still works offline.
+
+## Working rules
+- After any JS change, run a syntax check: extract the `<script>` content and run `node --check`.
+- Prefer small, surgical edits over rewrites. Keep the file readable (sections are marked with `/* ---------- ... ---------- */`).
+- When adding cards, follow `docs/DECK_FORMAT.md`: one fact per card, short answers, Swedish, wording close to the textbook.
+- Update `docs/ROADMAP.md` when finishing or adding items.
+
+## Deploy
+Push to `main`; GitHub Pages serves the repo root (`index.html`). Verify on an iPhone in Safari after deploying, since local-only testing misses Safari-specific issues.
