@@ -17,7 +17,8 @@
 ## Content
 - [x] Group decks by subject/chapter on the home screen (collapsible `<details>` sections) so adding more decks doesn't crowd `#home`.
 - [x] Nested grouping: a deck's `group` is an arbitrary path array (e.g. `["Gretas Skol","Biologi","Kapitel 3 – Kroppen"]`), rendered as nested accordions.
-- [x] Port the "Kotoba" Japanese/WaniKani flashcard app (see `Old japanese flashcard app to port to flaca2/`) as decks under `Kotoba – Japanska` › `WaniKani-ordförråd`, chunked into 12 level-range decks (Nivå 1–5 … 56–60). Uses Flaca2's simple level engine, not the original's SRS/due-dates/lessons/library/insights — see README "Known quirks" for what was intentionally dropped.
+- [x] Port the "Kotoba" Japanese/WaniKani flashcard app (see `Old japanese flashcard app to port to flaca2/`) as decks under `Kotoba – Japanska` › `WaniKani-ordförråd`, one deck per level (Nivå 1 … 60). Uses Flaca2's simple level engine, not the original's SRS/due-dates/lessons/library/insights — see README "Known quirks" for what was intentionally dropped.
+- [x] "Öva flera kortlekar ihop": pick any combination of decks from a checklist sheet and study them as one blended, shuffled session (`startStudyMulti`).
 - [ ] Add next chapters as decks (photo -> cards workflow in `docs/DECK_FORMAT.md`), tagging each with its `group` path.
 - [ ] Add images for diagrams (kidney, antibiotic resistance, excretory system) as inline SVG or data URIs.
 - [ ] Optional deck files under `decks/*.json`, loaded at startup, so content updates don't require editing `index.html`.
